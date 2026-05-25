@@ -1,0 +1,80 @@
+{
+  "quiz": {
+    "title": "General Knowledge Quiz",
+    "description": "Test your knowledge across a range of topics!",
+    "time_limit_seconds": 30,
+    "passing_score": 60
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the largest planet in our solar system?",
+      "options": ["Saturn", "Jupiter", "Neptune", "Uranus"],
+      "correct": 1,
+      "explanation": "Jupiter is the largest planet, with a mass more than twice that of all other planets combined."
+    },
+    {
+      "id": 2,
+      "question": "How many continents are there on Earth?",
+      "options": ["5", "6", "7", "8"],
+      "correct": 2,
+      "explanation": "Earth has 7 continents: Africa, Antarctica, Asia, Australia, Europe, North America, and South America."
+    },
+    {
+      "id": 3,
+      "question": "Which element has the chemical symbol 'Au'?",
+      "options": ["Silver", "Aluminum", "Argon", "Gold"],
+      "correct": 3,
+      "explanation": "Au comes from the Latin word 'aurum', meaning gold."
+    },
+    {
+      "id": 4,
+      "question": "Who painted the Mona Lisa?",
+      "options": ["Michelangelo", "Leonardo da Vinci", "Raphael", "Caravaggio"],
+      "correct": 1,
+      "explanation": "Leonardo da Vinci painted the Mona Lisa between approximately 1503 and 1519."
+    },
+    {
+      "id": 5,
+      "question": "What is the capital city of Japan?",
+      "options": ["Osaka", "Kyoto", "Tokyo", "Hiroshima"],
+      "correct": 2,
+      "explanation": "Tokyo has been the capital of Japan since 1869, when Emperor Meiji moved the Imperial seat there."
+    },
+    {
+      "id": 6,
+      "question": "What is the speed of light in a vacuum (approximately)?",
+      "options": ["100,000 km/s", "300,000 km/s", "500,000 km/s", "1,000,000 km/s"],
+      "correct": 1,
+      "explanation": "Light travels at approximately 299,792 km/s, commonly rounded to 300,000 km/s."
+    },
+    {
+      "id": 7,
+      "question": "Which ocean is the largest?",
+      "options": ["Atlantic", "Indian", "Arctic", "Pacific"],
+      "correct": 3,
+      "explanation": "The Pacific Ocean is the largest, covering more than 30% of Earth's surface."
+    },
+    {
+      "id": 8,
+      "question": "In which year did the Berlin Wall fall?",
+      "options": ["1987", "1989", "1991", "1993"],
+      "correct": 1,
+      "explanation": "The Berlin Wall fell on November 9, 1989, marking a pivotal moment in the end of the Cold War."
+    },
+    {
+      "id": 9,
+      "question": "What is the hardest natural substance on Earth?",
+      "options": ["Titanium", "Platinum", "Diamond", "Quartz"],
+      "correct": 2,
+      "explanation": "Diamond scores 10 on the Mohs hardness scale, making it the hardest naturally occurring substance."
+    },
+    {
+      "id": 10,
+      "question": "How many strings does a standard guitar have?",
+      "options": ["4", "5", "6", "8"],
+      "correct": 2,
+      "explanation": "A standard guitar has 6 strings, tuned E-A-D-G-B-E from lowest to highest pitch."
+    }
+  ]
+}

@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>General Knowledge Quiz</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #ffffff;
+    --bg-secondary: #f5f5f4;
+    --text: #1a1a18;
+    --text-secondary: #6b6b68;
+    --border: rgba(0,0,0,0.12);
+    --border-hover: rgba(0,0,0,0.3);
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --correct-bg: #E1F5EE;
+    --correct-text: #085041;
+    --correct-border: #1D9E75;
+    --wrong-bg: #FCEBEB;
+    --wrong-text: #501313;
+    --wrong-border: #E24B4A;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1e1e1c;
+      --bg-secondary: #2a2a28;
+      --text: #f0ede8;
+      --text-secondary: #9a9a96;
+      --border: rgba(255,255,255,0.12);
+      --border-hover: rgba(255,255,255,0.3);
+      --correct-bg: #04342C;
+      --correct-text: #9FE1CB;
+      --correct-border: #1D9E75;
+      --wrong-bg: #2a0e0e;
+      --wrong-text: #F0958B;
+      --wrong-border: #E24B4A;
+    }
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
+  }
+
+  .quiz-wrap { width: 100%; max-width: 600px; }
+
+  .screen { animation: fadeIn 0.3s ease; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  h1 { font-size: 22px; font-weight: 500; margin-bottom: 6px; }
+  .subtitle { font-size: 14px; color: var(--text-secondary); margin-bottom: 1.5rem; line-height: 1.6; }
+
+  .meta-row { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 1.5rem; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 12px; padding: 4px 10px;
+    border-radius: 20px; border: 0.5px solid var(--border);
+    color: var(--text-secondary); background: var(--bg-secondary);
+  }
+  .badge i { font-size: 13px; }
+
+  .btn-primary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; font-size: 14px; font-weight: 500;
+    background: var(--text); color: var(--bg);
+    border: none; border-radius: var(--radius-md);
+    cursor: pointer; transition: opacity 0.15s;
+  }
+  .btn-primary:hover { opacity: 0.82; }
+
+  .btn-secondary {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 10px 20px; font-size: 14px; font-weight: 500;
+    background: transparent; color: var(--text);
+    border: 0.5px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    cursor: pointer; transition: background 0.15s;
+  }
+  .btn-secondary:hover { background: var(--bg-secondary); }
+
+  .progress-bar-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: 1.5rem; }
+  .progress-bar-fill { height: 100%; background: var(--text); border-radius: 2px; transition: width 0.4s ease; }
+
+  .q-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.2rem; }
+  .q-num { font-size: 12px; color: var(--text-secondary); }
+  .timer { font-size: 13px; font-weight: 500; display: flex; align-items: center; gap: 4px; color: var(--text); }
+  .timer.urgent { color: #E24B4A; }
+
+  .q-text { font-size: 16px; font-weight: 500; line-height: 1.5; margin-bottom: 1.25rem; }
+
+  .options { display: flex; flex-direction: column; gap: 8px; margin-bottom: 1.25rem; }
+  .option-btn {
+    display: flex; align-items: center; gap: 10px;
+    padding: 12px 14px;
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-md);
+    cursor: pointer; text-align: left;
+    font-size: 14px; color: var(--text);
+    transition: border-color 0.15s, background 0.15s;
+    width: 100%;
+  }
+  .option-btn:hover:not(:disabled) { border-color: var(--border-hover); background: var(--bg-secondary); }
+  .option-btn.selected { border-color: var(--border-hover); background: var(--bg-secondary); }
+  .option-btn.correct { border-color: var(--correct-border); background: var(--correct-bg); color: var(--correct-text); }
+  .option-btn.wrong   { border-color: var(--wrong-border);   background: var(--wrong-bg);   color: var(--wrong-text); }
+  .option-btn:disabled { cursor: default; }
+
+  .option-letter {
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 0.5px solid var(--border-hover);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 500; flex-shrink: 0;
+    color: var(--text-secondary);
+  }
+  .correct .option-letter { border-color: var(--correct-border); background: var(--correct-border); color: #fff; }
+  .wrong   .option-letter { border-color: var(--wrong-border);   background: var(--wrong-border);   color: #fff; }
+
+  .explanation-box {
+    padding: 12px 14px;
+    background: var(--bg-secondary);
+    border-left: 2px solid var(--border-hover);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+    font-size: 13px; color: var(--text-secondary);
+    line-height: 1.6; margin-bottom: 1.25rem;
+  }
+
+  .q-footer { display: flex; justify-content: flex-end; }
+
+  .score-card {
+    background: var(--bg); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.5rem; margin-bottom: 1.25rem;
+  }
+  .score-big { font-size: 48px; font-weight: 500; line-height: 1; }
+  .score-label { font-size: 13px; color: var(--text-secondary); margin-top: 4px; margin-bottom: 1.25rem; }
+  .score-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .stat { background: var(--bg-secondary); border-radius: var(--radius-md); padding: 10px 12px; }
+  .stat-val { font-size: 20px; font-weight: 500; }
+  .stat-key { font-size: 11px; color: var(--text-secondary); margin-top: 2px; }
+
+  .result-tag {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; font-weight: 500;
+    padding: 6px 14px; border-radius: 20px; margin-bottom: 1.25rem;
+  }
+  .result-tag.pass { background: var(--correct-bg); color: var(--correct-text); }
+  .result-tag.fail { background: var(--wrong-bg); color: var(--wrong-text); }
+
+  .review-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 1.5rem; }
+  .review-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 12px; border-radius: var(--radius-md); font-size: 13px;
+  }
+  .review-item.ok { background: var(--correct-bg); color: var(--correct-text); }
+  .review-item.no { background: var(--wrong-bg); color: var(--wrong-text); }
+  .review-item i { flex-shrink: 0; font-size: 16px; margin-top: 1px; }
+  .review-q { flex: 1; }
+  .review-ans { font-size: 12px; opacity: 0.8; margin-top: 2px; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; }
+</style>
+</head>
+<body>
+<div class="quiz-wrap" id="root"></div>
+
+<script>
+// ─── Question Data (loaded from inline JSON — swap with fetch() for external file) ───
+const QUIZ_DATA = {
+  "quiz": {
+    "title": "General Knowledge Quiz",
+    "description": "Test your knowledge across a range of topics!",
+    "time_limit_seconds": 30,
+    "passing_score": 60
+  },
+  "questions": [
+    { "id":1, "question":"What is the largest planet in our solar system?", "options":["Saturn","Jupiter","Neptune","Uranus"], "correct":1, "explanation":"Jupiter is the largest planet, with a mass more than twice that of all other planets combined." },
+    { "id":2, "question":"How many continents are there on Earth?", "options":["5","6","7","8"], "correct":2, "explanation":"Earth has 7 continents: Africa, Antarctica, Asia, Australia, Europe, North America, and South America." },
+    { "id":3, "question":"Which element has the chemical symbol 'Au'?", "options":["Silver","Aluminum","Argon","Gold"], "correct":3, "explanation":"Au comes from the Latin word 'aurum', meaning gold." },
+    { "id":4, "question":"Who painted the Mona Lisa?", "options":["Michelangelo","Leonardo da Vinci","Raphael","Caravaggio"], "correct":1, "explanation":"Leonardo da Vinci painted the Mona Lisa between approximately 1503 and 1519." },
+    { "id":5, "question":"What is the capital city of Japan?", "options":["Osaka","Kyoto","Tokyo","Hiroshima"], "correct":2, "explanation":"Tokyo has been the capital of Japan since 1869, when Emperor Meiji moved the Imperial seat there." },
+    { "id":6, "question":"What is the speed of light in a vacuum (approximately)?", "options":["100,000 km/s","300,000 km/s","500,000 km/s","1,000,000 km/s"], "correct":1, "explanation":"Light travels at approximately 299,792 km/s, commonly rounded to 300,000 km/s." },
+    { "id":7, "question":"Which ocean is the largest?", "options":["Atlantic","Indian","Arctic","Pacific"], "correct":3, "explanation":"The Pacific Ocean covers more than 30% of Earth's surface." },
+    { "id":8, "question":"In which year did the Berlin Wall fall?", "options":["1987","1989","1991","1993"], "correct":1, "explanation":"The Berlin Wall fell on November 9, 1989, marking a pivotal moment in the end of the Cold War." },
+    { "id":9, "question":"What is the hardest natural substance on Earth?", "options":["Titanium","Platinum","Diamond","Quartz"], "correct":2, "explanation":"Diamond scores 10 on the Mohs hardness scale, making it the hardest naturally occurring substance." },
+    { "id":10, "question":"How many strings does a standard guitar have?", "options":["4","5","6","8"], "correct":2, "explanation":"A standard guitar has 6 strings, tuned E-A-D-G-B-E from lowest to highest pitch." }
+  ]
+};
+
+// ─── Config ───
+const QUESTIONS   = QUIZ_DATA.questions;
+const TIME_LIMIT  = QUIZ_DATA.quiz.time_limit_seconds;
+const PASSING     = QUIZ_DATA.quiz.passing_score;
+const TITLE       = QUIZ_DATA.quiz.title;
+const DESCRIPTION = QUIZ_DATA.quiz.description;
+const LETTERS     = ['A','B','C','D'];
+
+// ─── State ───
+let state = {
+  screen: 'intro',
+  qIndex: 0,
+  selected: null,
+  revealed: false,
+  answers: [],
+  timerInterval: null
+};
+
+function setState(patch) {
+  Object.assign(state, patch);
+  render();
+}
+
+// ─── Timer ───
+function startTimer() {
+  clearInterval(state.timerInterval);
+  let t = TIME_LIMIT;
+  const iv = setInterval(() => {
+    t--;
+    const el = document.getElementById('timer-val');
+    if (el) {
+      el.textContent = t;
+      el.parentElement.className = 'timer' + (t <= 8 ? ' urgent' : '');
+    }
+    if (t <= 0) { clearInterval(iv); autoReveal(); }
+  }, 1000);
+  setState({ timerInterval: iv });
+}
+
+function autoReveal() {
+  if (state.revealed) return;
+  const answers = [...state.answers, { qIndex: state.qIndex, selected: null, correct: false }];
+  setState({ revealed: true, answers });
+}
+
+// ─── Actions ───
+function startQuiz() {
+  setState({ screen: 'quiz', qIndex: 0, selected: null, revealed: false, answers: [] });
+  startTimer();
+}
+
+function selectOption(i) {
+  if (state.revealed) return;
+  clearInterval(state.timerInterval);
+  const correct = i === QUESTIONS[state.qIndex].correct;
+  const answers = [...state.answers, { qIndex: state.qIndex, selected: i, correct }];
+  setState({ selected: i, revealed: true, answers });
+}
+
+function next() {
+  const nextIndex = state.qIndex + 1;
+  if (nextIndex >= QUESTIONS.length) {
+    setState({ screen: 'results', selected: null, revealed: false });
+  } else {
+    setState({ qIndex: nextIndex, selected: null, revealed: false });
+    startTimer();
+  }
+}
+
+function restart() {
+  clearInterval(state.timerInterval);
+  setState({ screen: 'intro', qIndex: 0, selected: null, revealed: false, answers: [], timerInterval: null });
+}
+
+// ─── Screens ───
+function renderIntro() {
+  return `<div class="screen">
+    <h1>${TITLE}</h1>
+    <p class="subtitle">${DESCRIPTION}</p>
+    <div class="meta-row">
+      <span class="badge"><i class="ti ti-list-numbers"></i>${QUESTIONS.length} questions</span>
+      <span class="badge"><i class="ti ti-clock"></i>${TIME_LIMIT}s per question</span>
+      <span class="badge"><i class="ti ti-trophy"></i>Pass at ${PASSING}%</span>
+    </div>
+    <button class="btn-primary" onclick="startQuiz()">
+      <i class="ti ti-player-play"></i>Start quiz
+    </button>
+  </div>`;
+}
+
+function renderQuiz() {
+  const q = QUESTIONS[state.qIndex];
+  const progress = (state.qIndex / QUESTIONS.length) * 100;
+
+  const opts = q.options.map((opt, i) => {
+    let cls = 'option-btn';
+    if (state.revealed) {
+      if (i === q.correct) cls += ' correct';
+      else if (i === state.selected) cls += ' wrong';
+    } else if (i === state.selected) cls += ' selected';
+    return `<button class="${cls}" onclick="selectOption(${i})" ${state.revealed ? 'disabled' : ''}>
+      <span class="option-letter">${LETTERS[i]}</span>${opt}
+    </button>`;
+  }).join('');
+
+  const explanation = state.revealed
+    ? `<div class="explanation-box"><strong>Note:</strong> ${q.explanation}</div>`
+    : '';
+
+  const nextBtn = state.revealed
+    ? `<div class="q-footer">
+        <button class="btn-primary" onclick="next()">
+          ${state.qIndex + 1 < QUESTIONS.length
+            ? 'Next question <i class="ti ti-arrow-right"></i>'
+            : 'See results <i class="ti ti-chart-bar"></i>'}
+        </button>
+      </div>`
+    : '';
+
+  return `<div class="screen">
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" style="width:${progress}%"></div>
+    </div>
+    <div class="q-header">
+      <span class="q-num">Question ${state.qIndex + 1} of ${QUESTIONS.length}</span>
+      <span class="timer">
+        <i class="ti ti-clock"></i><span id="timer-val">${TIME_LIMIT}</span>s
+      </span>
+    </div>
+    <p class="q-text">${q.question}</p>
+    <div class="options">${opts}</div>
+    ${explanation}
+    ${nextBtn}
+  </div>`;
+}
+
+function renderResults() {
+  const total   = QUESTIONS.length;
+  const correct = state.answers.filter(a => a.correct).length;
+  const skipped = state.answers.filter(a => a.selected === null).length;
+  const wrong   = total - correct - skipped;
+  const pct     = Math.round((correct / total) * 100);
+  const passed  = pct >= PASSING;
+
+  const reviewItems = state.answers.map(a => {
+    const q       = QUESTIONS[a.qIndex];
+    const yourAns = a.selected !== null ? q.options[a.selected] : 'No answer (timed out)';
+    const rightAns = q.options[q.correct];
+    return `<div class="review-item ${a.correct ? 'ok' : 'no'}">
+      <i class="ti ${a.correct ? 'ti-circle-check' : 'ti-circle-x'}"></i>
+      <div class="review-q">
+        <div>${q.question}</div>
+        ${!a.correct ? `<div class="review-ans">Your answer: ${yourAns} · Correct: ${rightAns}</div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+
+  return `<div class="screen">
+    <h1>Quiz complete</h1>
+    <div class="score-card">
+      <div class="score-big">${pct}%</div>
+      <div class="score-label">Overall score — ${correct} of ${total} correct</div>
+      <div class="score-grid">
+        <div class="stat"><div class="stat-val">${correct}</div><div class="stat-key">Correct</div></div>
+        <div class="stat"><div class="stat-val">${wrong}</div><div class="stat-key">Wrong</div></div>
+        <div class="stat"><div class="stat-val">${skipped}</div><div class="stat-key">Skipped</div></div>
+      </div>
+    </div>
+    <div class="result-tag ${passed ? 'pass' : 'fail'}">
+      <i class="ti ${passed ? 'ti-trophy' : 'ti-mood-sad'}"></i>
+      ${passed ? 'Passed — great work!' : `Not quite — need ${PASSING}% to pass`}
+    </div>
+    <div class="review-list">${reviewItems}</div>
+    <div class="btn-row">
+      <button class="btn-primary" onclick="restart()">
+        <i class="ti ti-refresh"></i>Try again
+      </button>
+    </div>
+  </div>`;
+}
+
+// ─── Render ───
+function render() {
+  const root = document.getElementById('root');
+  if (state.screen === 'intro')   root.innerHTML = renderIntro();
+  else if (state.screen === 'quiz') root.innerHTML = renderQuiz();
+  else root.innerHTML = renderResults();
+}
+
+render();
+</script>
+</body>
+</html>
